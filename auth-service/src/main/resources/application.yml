@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: mongodb://localhost:27017
+
+security:
+  jwt:
+    uri: /
+    header: Authorization
+    prefix: Bearer
+    expiration: 86400
+    secret: JwtSecretKey
+
+server:
+  port: 8081
