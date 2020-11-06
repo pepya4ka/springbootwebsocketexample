@@ -10,5 +10,3 @@ security:
     expiration: 86400
     secret: JwtSecretKey
 
-server:
-  port: 8081

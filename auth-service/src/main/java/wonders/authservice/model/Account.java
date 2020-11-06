@@ -27,11 +27,13 @@ public class Account {
         this.password = account.password;
         this.createdAt = account.createdAt;
         this.updatedAt = account.updatedAt;
+        this.active = true;
     }
 
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
+        this.active = true;
     }
 
     @Id

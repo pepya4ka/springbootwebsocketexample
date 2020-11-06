@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wonders.authservice.exception.AccountAlreadyExistException;
+import wonders.authservice.exception.BadLoginPasswordException;
 import wonders.authservice.model.Account;
 import wonders.authservice.repositories.AccountRepository;
 
@@ -37,13 +38,20 @@ public class AccountService {
         return null;
     }
 
-    public Account registerUser(Account account) throws AccountAlreadyExistException {
+    public Account registerUser(Account account) throws AccountAlreadyExistException, BadLoginPasswordException {
         log.info("registering user {}", account.getUsername());
+
+        if(account.getUsername().isEmpty() || account.getPassword().isEmpty()
+                || account.getUsername() == null || account.getPassword() == null ) {
+            log.warn("login/password null");
+
+            throw new BadLoginPasswordException("Логин/пароль не могут быть пустыми");
+        }
 
         if(accountRepository.existsByUsername(account.getUsername())) {
             log.warn("username {} already exists.", account.getUsername());
 
-            throw new AccountAlreadyExistException(String.format("username %s already exists", account.getUsername()));
+            throw new AccountAlreadyExistException(String.format("Логин %s занят", account.getUsername()));
         }
 
         account.setActive(true);
@@ -54,7 +62,7 @@ public class AccountService {
     }
 
     public Optional<Account> findByUsername(String login) {
-        //log.info("retrieving user {}", login);
+        log.info("retrieving user {}", login);
         return accountRepository.findByUsername(login);
     }
 }
