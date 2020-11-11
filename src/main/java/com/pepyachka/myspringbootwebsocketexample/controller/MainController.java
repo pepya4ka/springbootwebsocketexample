@@ -12,7 +12,7 @@ public class MainController {
     @MessageMapping("/main.start")
     @SendTo("/game")
     public GameState start() {
-        return new GameState();
+        return new GameState(1);
     }
 
     @MessageMapping("/main.stat")
