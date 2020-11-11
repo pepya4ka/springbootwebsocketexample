@@ -12,6 +12,7 @@ import wonders.authservice.exception.BadLoginPasswordException;
 import wonders.authservice.model.Account;
 import wonders.authservice.repositories.AccountRepository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -38,11 +39,12 @@ public class AccountService {
         return null;
     }
 
+    @Transactional
     public Account registerUser(Account account) throws AccountAlreadyExistException, BadLoginPasswordException {
         log.info("registering user {}", account.getUsername());
 
-        if(account.getUsername().isEmpty() || account.getPassword().isEmpty()
-                || account.getUsername() == null || account.getPassword() == null ) {
+        if(account.getUsername() == null || account.getPassword() == null
+                || account.getUsername().isEmpty() || account.getPassword().isEmpty()) {
             log.warn("login/password null");
 
             throw new BadLoginPasswordException("Логин/пароль не могут быть пустыми");

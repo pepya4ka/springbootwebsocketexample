@@ -1,6 +1,9 @@
 spring:
   datasource:
-    url: mongodb://localhost:27017
+    username: b6a2fe523eea0b
+    url: jdbc:mysql://eu-cdbr-west-03.cleardb.net/heroku_7edbe89173452c0
+    password: ce15440a
+
 
 security:
   jwt:
