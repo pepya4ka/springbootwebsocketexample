@@ -5,29 +5,29 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 
-//TODO
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "accounts")
+@Entity
+@Table(name = "accounts")
 public class Account {
 
     public Account(Account account) {
         this.id = account.id;
         this.username = account.username;
         this.password = account.password;
-        this.createdAt = account.createdAt;
-        this.updatedAt = account.updatedAt;
-        this.active = true;
+        this.active = account.active;
+        this.role = account.role;
     }
 
     public Account(String username, String password) {
@@ -37,19 +37,19 @@ public class Account {
     }
 
     @Id
-    private ObjectId id;
+    @Column(name = "id")
+    private int id;
 
+    @Column(name="username")
     private String username;
 
+    @Column(name="password")
     @JsonIgnore
     private String password;
 
-    @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant updatedAt;
-
+    @Column(name = "active")
     private boolean active;
+
+    @Column(name = "role")
     String role;
 }
