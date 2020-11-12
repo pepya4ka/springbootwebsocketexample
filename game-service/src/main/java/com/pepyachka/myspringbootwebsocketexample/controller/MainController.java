@@ -9,19 +9,41 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class MainController {
 
-    @MessageMapping("/main.start")
-    @SendTo("/game")
+    @MessageMapping("/start/")
+    @SendTo("/topic/lobby/")
     public GameState start() {
-        return new GameState();
+        return new GameState(1);
     }
 
-    @MessageMapping("/main.stat")
-    public PlayerStat stat() {
-        return new PlayerStat();
+    @MessageMapping("/create/")
+    @SendTo("/topic/lobby/")
+    public GameState create() {
+        return new GameState(1);
     }
 
-    @MessageMapping("/main.search")
-    public void search() {
-        return;
+    @MessageMapping("/connect/")
+    @SendTo("/topic/lobby/")
+    public GameState connect() {
+        return new GameState(1);
     }
+
+    @MessageMapping("/disconnect/")
+    @SendTo("/topic/lobby/")
+    public GameState disconnect() {
+        return new GameState(1);
+    }
+
+    @MessageMapping("/update/")
+    @SendTo("/topic/lobby/")
+    public GameState update() {
+        return new GameState(1);
+    }
+
+    @MessageMapping("/delete/")
+    @SendTo("/topic/lobby/")
+    public GameState delete() {
+        return new GameState(1);
+    }
+
+
 }
