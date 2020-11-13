@@ -1,0 +1,18 @@
+CREATE TABLE lobbys
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20),
+    owner_name VARCHAR(20),
+    owner_id VARCHAR(20),
+    max_players INT,
+    move_time TIME
+);
+
+CREATE TABLE lobby_players
+(
+    id INTEGER PRIMARY KEY AUTO_INCREMENT ,
+    username VARCHAR(20),
+    lobby_id INT,
+    ready bool,
+    FOREIGN KEY (lobby_id) REFERENCES lobbys (id) ON DELETE CASCADE
+)
