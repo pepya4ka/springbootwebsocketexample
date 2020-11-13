@@ -41,10 +41,10 @@ class GameControllerTest extends AbstractIntegrationTest {
         StompSession stompSession = stompClient.connect(URL, new StompSessionHandlerAdapter() {
         }).get(1, SECONDS);
 
-        stompSession.subscribe("/topic/game/", new CreateGameStompFrameHandler());
+        stompSession.subscribe("/topic/lobby/", new CreateGameStompFrameHandler());
         stompSession.send("/app/create/", new GameState(1));
         stompSession.send("/app/create/", new GameState(1));
-        stompSession.send("/app/create", new GameState(1));
+        stompSession.send("/app/create/", new GameState(1));
 
         GameState gameState = completableFuture.get(10, SECONDS);
 
