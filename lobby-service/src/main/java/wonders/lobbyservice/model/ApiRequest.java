@@ -1,16 +1,32 @@
 package wonders.lobbyservice.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashMap;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApiRequest {
+
+    @Getter
+    @Setter
     private Data data;
 
-    @lombok.Data
-    private class Data {
+    @AllArgsConstructor
+    public static class Data {
+
+        @Getter
+        @Setter
         private String type;
+
+        @Getter
+        @Setter
         private HashMap<String, String> attributes;
+
     }
+
+
 }

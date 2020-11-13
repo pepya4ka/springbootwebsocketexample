@@ -3,7 +3,7 @@ package wonders.lobbyservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wonders.lobbyservice.model.LobbyPlayersEntity;
-import wonders.lobbyservice.model.LobbysEntity;
+import wonders.lobbyservice.model.LobbiesEntity;
 import wonders.lobbyservice.repository.LobbyPlayersRepository;
 import wonders.lobbyservice.repository.LobbyRepository;
 
@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 @Service
 public class RequestHandler {
+
     @Autowired
     private LobbyPlayersRepository lobbyPlayersRepository;
     @Autowired
@@ -21,7 +22,7 @@ public class RequestHandler {
      * @returns attributes
      */
     public HashMap<String, String> createLobby(HashMap<String, String> attributes) {
-        LobbysEntity lobby = new LobbysEntity();
+        LobbiesEntity lobby = new LobbiesEntity();
 
         if (attributes.containsKey("lobbyName")) {
             lobby.setName(attributes.get("lobbyName"));
@@ -49,6 +50,7 @@ public class RequestHandler {
         results.put("ownerName", lobbyPlayer.getUsername());
         results.put("ownerId", lobbyPlayer.getId().toString());
         results.put("lobbyId", lobby.getId().toString());
+        results.put("lobbyName", lobby.getName());
         results.put("maxPlayers", lobby.getMaxPlayers().toString());
         results.put("movieTime", lobby.getMoveTime().toString());
 

@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 @Service
 public class LobbyPlayersService {
+
     @Autowired
     LobbyPlayersRepository lobbyPlayersRepository;
 

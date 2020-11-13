@@ -10,8 +10,9 @@ import java.sql.Time;
 
 @Entity
 @Table(name = "lobbys")
-@Data
-public class LobbysEntity {
+@lombok.Data
+public class LobbiesEntity {
+
     @Id
     private Integer id;
 
@@ -29,4 +30,7 @@ public class LobbysEntity {
 
     @Column(name = "move_time")
     private Time moveTime;
+
+    public LobbiesEntity() {
+    }
 }
