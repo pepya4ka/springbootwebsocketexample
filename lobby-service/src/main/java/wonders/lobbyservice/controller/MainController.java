@@ -1,45 +1,32 @@
 package wonders.lobbyservice.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import wonders.lobbyservice.model.ApiRequest;
 import wonders.lobbyservice.model.ApiResponse;
 import wonders.lobbyservice.model.GameState;
+import wonders.lobbyservice.service.RequestHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 public class MainController {
+    @Autowired
+    RequestHandler requestHandler;
 
     @MessageMapping("/create/")
     @SendTo("/topic/lobby/")
     public ApiResponse create(ApiRequest apiRequest) {
+        ApiResponse response = new ApiResponse();
+        response.setStatus("SUCCESS");
+        response.setResults(requestHandler.createLobby(apiRequest.getData().getAttributes()));
+        response.setModule("Lobby");
+        response.setType("Create");
 
-        HashMap<String, String> hashMapResponse = new HashMap<>();
-        for (Map.Entry<String, String> entry : apiRequest.getData().getAttributes().entrySet()) {
-
-            if (entry.getKey().equals("playerName"))
-                hashMapResponse.put("ownerName", "ownerName");
-
-            if (entry.getKey().equals("lobbyName"))
-                hashMapResponse.put("lobbyName", "lobbyName");
-
-            if (entry.getKey().equals("maxPlayers"))
-                hashMapResponse.put("maxPlayers", "maxPlayers");
-
-            if (entry.getKey().equals("moveTime"))
-                hashMapResponse.put("moveTime", "moveTime");
-
-        }
-        hashMapResponse.put("ownerId", "ownerId");
-        hashMapResponse.put("lobbyId", "lobbyId");
-        ApiResponse apiResponse = new ApiResponse();
-        apiResponse.setStatus("SUCCESS");
-        apiResponse.setModule("lobby");
-        apiResponse.setType("create");
-        return apiResponse;
+        return response;
     }
 
     @MessageMapping("/start/")
