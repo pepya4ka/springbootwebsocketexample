@@ -49,7 +49,7 @@ class MainControllerTest extends AbstractIntegrationTest {
         results.put("lobbyId", "lobbyId");
         results.put("lobbyName", "lobbyName");
         results.put("maxPlayers", "6");
-//        results.put("movieTime", "movieTime");
+        results.put("movieTime", "movieTime");
         ApiRequest apiRequest = new ApiRequest(new ApiRequest.Data("create",results));
 
         stompSession.subscribe("/topic/lobby/", new CreateLobbyStompFrameHandler());

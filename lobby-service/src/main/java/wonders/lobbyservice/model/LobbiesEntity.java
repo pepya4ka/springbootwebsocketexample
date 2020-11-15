@@ -2,16 +2,15 @@ package wonders.lobbyservice.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Time;
 
 @Entity
 @Table(name = "lobbys")
 @Data
 public class LobbiesEntity {
+
+    @GeneratedValue(strategy=GenerationType.AUTO)
 
     @Id
     private Integer id;
