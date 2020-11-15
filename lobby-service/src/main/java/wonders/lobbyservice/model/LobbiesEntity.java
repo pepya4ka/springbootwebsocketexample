@@ -10,7 +10,7 @@ import java.sql.Time;
 
 @Entity
 @Table(name = "lobbys")
-@lombok.Data
+@Data
 public class LobbiesEntity {
 
     @Id

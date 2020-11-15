@@ -52,7 +52,7 @@ public class RequestHandler {
         results.put("lobbyId", lobby.getId().toString());
         results.put("lobbyName", lobby.getName());
         results.put("maxPlayers", lobby.getMaxPlayers().toString());
-        results.put("movieTime", lobby.getMoveTime().toString());
+//        results.put("movieTime", lobby.getMoveTime().toString());
 
         return results;
     }
