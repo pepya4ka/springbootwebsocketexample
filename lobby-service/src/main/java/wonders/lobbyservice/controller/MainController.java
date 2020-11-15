@@ -22,7 +22,12 @@ public class MainController {
     public ApiResponse create(ApiRequest apiRequest) {
         ApiResponse response = new ApiResponse();
         response.setStatus("SUCCESS");
-        response.setResults(requestHandler.createLobby(apiRequest.getData().getAttributes()));
+        //TODO API ERROR RESPONSE
+        try {
+            response.setResults(requestHandler.createLobby(apiRequest.getData().getAttributes()));
+        } catch (Exception e) {
+            return null;
+        }
         response.setModule("Lobby");
         response.setType("Create");
 

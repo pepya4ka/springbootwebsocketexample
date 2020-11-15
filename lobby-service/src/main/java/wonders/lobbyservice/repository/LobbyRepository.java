@@ -6,4 +6,6 @@ import wonders.lobbyservice.model.LobbiesEntity;
 
 @Repository
 public interface LobbyRepository extends CrudRepository <LobbiesEntity, Integer> {
+    @Override
+    void deleteById(Integer integer);
 }
