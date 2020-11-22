@@ -2,27 +2,39 @@ package wonders.lobbyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import wonders.lobbyservice.model.LobbyPlayersEntity;
-import wonders.lobbyservice.model.LobbiesEntity;
-import wonders.lobbyservice.repository.LobbyPlayersRepository;
-import wonders.lobbyservice.repository.LobbyRepository;
+import org.springframework.transaction.annotation.Transactional;
+import wonders.lobbyservice.model.LobbyEntity;
+import wonders.lobbyservice.model.LobbyOwnerEntity;
+import wonders.lobbyservice.model.LobbyOwnerEntityPK;
+import wonders.lobbyservice.model.PlayerEntity;
 
 import java.sql.Time;
+import java.util.Collections;
 import java.util.HashMap;
 
 @Service
 public class RequestHandler {
 
     @Autowired
-    private LobbyPlayersRepository lobbyPlayersRepository;
+    private PlayerService playerService;
     @Autowired
-    private LobbyRepository lobbyRepository;
+    private LobbyService lobbyService;
+    @Autowired
+    private LobbyOwnerService lobbyOwnerService;
 
     /*
      * @return attributes to response
      */
     public HashMap<String, String> createLobby(HashMap<String, String> attributes) throws Exception {
-        LobbiesEntity lobby = new LobbiesEntity();
+        PlayerEntity player = new PlayerEntity();
+
+        //TODO добавить начальный статус игрока, мб в enum
+        if (attributes.containsKey("playerName")) {
+            player.setUsername(String.valueOf(attributes.get("playerName")));
+        }
+
+        LobbyEntity lobby = new LobbyEntity();
+        lobby.setPlayers(Collections.singletonList(player));
 
         //TODO add exceptions
         if (attributes.containsKey("lobbyName")) {
@@ -41,25 +53,19 @@ public class RequestHandler {
             throw new Exception();
         }
 
-        lobby = lobbyRepository.save(lobby);
+        lobby = lobbyService.save(lobby);
 
-        LobbyPlayersEntity lobbyPlayer = new LobbyPlayersEntity();
-
-        lobbyPlayer.setLobbyId(lobby.getId());
-        //TODO добавить начальный статус игрока, мб в enum
-        if (attributes.containsKey("playerName")) {
-            lobbyPlayer.setUsername(String.valueOf(attributes.get("playerName")));
-        }
-
-        lobbyPlayersRepository.save(lobbyPlayer);
+        LobbyOwnerEntity owner = new LobbyOwnerEntity();
+        owner.setPk(new LobbyOwnerEntityPK(lobby.getId(), player.getId()));
+        lobbyOwnerService.save(owner);
 
         HashMap<String, String> results = new HashMap<>();
-        results.put("ownerName", lobbyPlayer.getUsername());
-        results.put("ownerId", lobbyPlayer.getId().toString());
+        results.put("ownerName", player.getUsername());
+        results.put("ownerId", player.getId().toString());
         results.put("lobbyId", lobby.getId().toString());
         results.put("lobbyName", lobby.getName());
         results.put("maxPlayers", lobby.getMaxPlayers().toString());
-//        results.put("movieTime", lobby.getMoveTime().toString());
+        results.put("movieTime", lobby.getMoveTime().toString());
 
         return results;
     }
@@ -67,17 +73,18 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
+    @Transactional
     public HashMap<String, String> deleteLobby (HashMap<String, String> attributes) throws Exception {
-        Integer lobbyId;
+        int lobbyId;
         if(attributes.containsKey("lobbyId")){
             lobbyId = Integer.parseInt(attributes.get("lobbyId"));
-            lobbyRepository.deleteById(lobbyId);
+            //lobbyRepository.deleteById(lobbyId);
         } else {
             throw new Exception();
         }
 
         HashMap<String, String> results = new HashMap<>();
-        results.put("lobbyId", lobbyId.toString());
+        results.put("lobbyId", Integer.toString(lobbyId));
 
         return results;
     }
@@ -85,11 +92,12 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
+    @Transactional
     public HashMap<String, String> connectPlayer(HashMap<String, String> attributes) throws Exception {
-        LobbyPlayersEntity lobbyPlayer = new LobbyPlayersEntity();
+        PlayerEntity lobbyPlayer = new PlayerEntity();
 
         if(attributes.containsKey("lobbyId")) {
-            lobbyPlayer.setLobbyId(Integer.valueOf(attributes.get("lobbyId")));
+            //lobbyPlayer.setLobbyId(Integer.valueOf(attributes.get("lobbyId")));
         } else {
             throw new Exception();
         }
@@ -100,11 +108,11 @@ public class RequestHandler {
             throw new Exception();
         }
 
-        lobbyPlayer = lobbyPlayersRepository.save(lobbyPlayer);
+        //lobbyPlayer = lobbyPlayersRepository.save(lobbyPlayer);
 
         HashMap<String, String> result = new HashMap<>();
-        result.put("lobbyId", lobbyPlayer.getLobbyId().toString());
-        result.put("playerId", lobbyPlayer.getId().toString());
+        //result.put("lobbyId", lobbyPlayer.getLobbyId().toString());
+        result.put("playerId", String.valueOf(lobbyPlayer.getId()));
         result.put("playerName", lobbyPlayer.getUsername());
 
         return result;

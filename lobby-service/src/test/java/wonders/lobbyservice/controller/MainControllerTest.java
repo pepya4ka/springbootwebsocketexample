@@ -1,5 +1,6 @@
 package wonders.lobbyservice.controller;
 
+import org.springframework.transaction.annotation.Transactional;
 import wonders.lobbyservice.AbstractIntegrationTest;
 import wonders.lobbyservice.model.ApiRequest;
 import wonders.lobbyservice.model.ApiResponse;
@@ -42,20 +43,15 @@ class MainControllerTest extends AbstractIntegrationTest {
         StompSession stompSession = stompClient.connect(URL, new StompSessionHandlerAdapter() {
         }).get(1, SECONDS);
 
-
         HashMap<String, String> results = new HashMap<>();
-        results.put("ownerName", "ownerName");
-        results.put("ownerId", "ownerId");
-        results.put("lobbyId", "lobbyId");
+        results.put("playerName", "playerName");
         results.put("lobbyName", "lobbyName");
         results.put("maxPlayers", "6");
-        results.put("movieTime", "movieTime");
+        results.put("moveTime", "00:00:12");
         ApiRequest apiRequest = new ApiRequest(new ApiRequest.Data("create",results));
 
-        stompSession.subscribe("/topic/lobby/", new CreateLobbyStompFrameHandler());
-        stompSession.send("/app/create/", apiRequest);
-        stompSession.send("/app/create/", apiRequest);
-        stompSession.send("/app/create/", apiRequest);
+        stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
+        stompSession.send("/app/create", apiRequest);
 
         ApiResponse apiResponse = completableFuture.get(10, SECONDS);
 
