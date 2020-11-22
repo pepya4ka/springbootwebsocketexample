@@ -17,4 +17,19 @@ public class LobbyServiceImpl implements LobbyService {
     public LobbyEntity save(LobbyEntity entity) {
         return lobbyRepository.save(entity);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        lobbyRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existById(Long id) {
+        return lobbyRepository.existsById(id);
+    }
+
+    @Override
+    public LobbyEntity findById(Long id) throws Exception {
+        return lobbyRepository.findById(id).orElseThrow(Exception::new);
+    }
 }

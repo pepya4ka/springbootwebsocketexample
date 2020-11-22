@@ -75,16 +75,14 @@ public class RequestHandler {
      */
     @Transactional
     public HashMap<String, String> deleteLobby (HashMap<String, String> attributes) throws Exception {
-        int lobbyId;
         if(attributes.containsKey("lobbyId")){
-            lobbyId = Integer.parseInt(attributes.get("lobbyId"));
-            //lobbyRepository.deleteById(lobbyId);
+            lobbyService.deleteById(Long.valueOf(attributes.get("lobbyId")));
         } else {
             throw new Exception();
         }
 
         HashMap<String, String> results = new HashMap<>();
-        results.put("lobbyId", Integer.toString(lobbyId));
+        results.put("lobbyId", attributes.get("lobbyId"));
 
         return results;
     }
@@ -95,9 +93,16 @@ public class RequestHandler {
     @Transactional
     public HashMap<String, String> connectPlayer(HashMap<String, String> attributes) throws Exception {
         PlayerEntity lobbyPlayer = new PlayerEntity();
+        LobbyEntity lobby;
 
         if(attributes.containsKey("lobbyId")) {
-            //lobbyPlayer.setLobbyId(Integer.valueOf(attributes.get("lobbyId")));
+            Long lobbyId = (Long.valueOf(attributes.get("lobbyId")));
+
+            if (lobbyService.existById(lobbyId)){
+                lobby = lobbyService.findById(lobbyId);
+            } else {
+                throw new Exception();
+            }
         } else {
             throw new Exception();
         }
@@ -108,10 +113,11 @@ public class RequestHandler {
             throw new Exception();
         }
 
-        //lobbyPlayer = lobbyPlayersRepository.save(lobbyPlayer);
+        lobby.addPlayer(lobbyPlayer);
+        lobbyService.save(lobby);
 
         HashMap<String, String> result = new HashMap<>();
-        //result.put("lobbyId", lobbyPlayer.getLobbyId().toString());
+        result.put("lobbyId", lobby.getId().toString());
         result.put("playerId", String.valueOf(lobbyPlayer.getId()));
         result.put("playerName", lobbyPlayer.getUsername());
 

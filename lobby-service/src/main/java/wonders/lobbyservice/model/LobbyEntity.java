@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -34,4 +35,12 @@ public class LobbyEntity {
     })
     @JoinColumn(name = "lobby_id")
     private List<PlayerEntity> players;
+
+    public void addPlayer(PlayerEntity player) {
+        if(players == null) {
+            players = new LinkedList<>();
+        }
+
+        players.add(player);
+    }
 }

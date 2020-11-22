@@ -5,8 +5,6 @@ import org.springframework.stereotype.Repository;
 import wonders.lobbyservice.model.LobbyEntity;
 
 @Repository
-public interface LobbyRepository extends CrudRepository <LobbyEntity, Integer> {
-    @Override
-    void deleteById(Integer integer);
+public interface LobbyRepository extends CrudRepository <LobbyEntity, Long> {
     LobbyEntity findByName(String name);
 }
