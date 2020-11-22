@@ -1,7 +1,10 @@
 package wonders.lobbyservice.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import wonders.lobbyservice.model.LobbyPlayersEntity;
+import org.springframework.stereotype.Repository;
+import wonders.lobbyservice.model.PlayerEntity;
 
-public interface LobbyPlayersRepository extends CrudRepository<LobbyPlayersEntity, String> {
+@Repository
+public interface LobbyPlayersRepository extends CrudRepository<PlayerEntity, String> {
+    PlayerEntity findByUsername (String username);
 }
