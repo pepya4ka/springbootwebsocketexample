@@ -10,22 +10,16 @@ import java.util.HashMap;
 @Builder
 public class ApiRequest {
 
-    @Getter
-    @Setter
     private Data data;
 
+    @Setter
+    @Getter
     @AllArgsConstructor
     public static class Data {
 
-        @Getter
-        @Setter
         private String type;
-
-        @Getter
-        @Setter
         private HashMap<String, String> attributes;
 
     }
-
 
 }
