@@ -47,8 +47,6 @@ public class RequestHandlerTests {
         //run
         HashMap<String, String> resultCreate = requestHandler.createLobby(defaultCreateLobbyAttributes);
         defaultDeleteLobbyAttributes.put("lobbyId", resultCreate.get("lobbyId"));
-        defaultUpdatePlayerStatusAttributes.put("playerId", resultCreate.get("ownerId"));
-        defaultUpdatePlayerStatusAttributes.put("state", "1");
         HashMap<String, String> result = requestHandler.deleteLobby(defaultDeleteLobbyAttributes);
 
 
@@ -64,7 +62,9 @@ public class RequestHandlerTests {
         //run
         HashMap<String, String> resultCreate = requestHandler.createLobby(defaultCreateLobbyAttributes);
         defaultUpdatePlayerStatusAttributes.put("lobbyId", resultCreate.get("lobbyId"));
-        HashMap<String, String> result = requestHandler.updatePlayerStatus(defaultCreateLobbyAttributes);
+        defaultUpdatePlayerStatusAttributes.put("playerId", resultCreate.get("ownerId"));
+        defaultUpdatePlayerStatusAttributes.put("state", "1");
+        HashMap<String, String> result = requestHandler.updatePlayerStatus(defaultUpdatePlayerStatusAttributes);
 
         //assert
         assert (!result.isEmpty());

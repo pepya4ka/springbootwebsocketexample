@@ -199,7 +199,7 @@ public class RequestHandler {
 
         int status;
         if(attributes.containsKey("state")) {
-            status = Integer.parseInt(attributes.get("playerName"));
+            status = Integer.parseInt(attributes.get("state"));
             player.get().setReady(status);
         } else {
             throw new IllegalArgumentException("missing player name attribute");
