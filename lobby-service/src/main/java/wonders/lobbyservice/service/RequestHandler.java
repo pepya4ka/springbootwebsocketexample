@@ -3,11 +3,11 @@ package wonders.lobbyservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wonders.lobbyservice.exception.LobbyOverflowException;
 import wonders.lobbyservice.model.LobbyEntity;
 import wonders.lobbyservice.model.PlayerEntity;
 
 import java.sql.Time;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -31,28 +31,27 @@ public class RequestHandler {
         if (attributes.containsKey("lobbyName")) {
             lobby.setName(attributes.get("lobbyName"));
         } else {
-            throw new IllegalArgumentException("missing lobby name attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'lobbyName'");
         }
         if (attributes.containsKey("maxPlayers")) {
             lobby.setMaxPlayers(Integer.valueOf(attributes.get("maxPlayers")));
         } else {
-            throw new IllegalArgumentException("missing max player attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'maxPlayers'");
         }
         if (attributes.containsKey("moveTime")) {
             lobby.setMoveTime(Time.valueOf(attributes.get("moveTime")));
         } else {
-            throw new IllegalArgumentException("missing move time attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'moveTime'");
         }
 
         lobby = lobbyService.save(lobby);
 
         PlayerEntity player = new PlayerEntity();
 
-        //TODO добавить начальный статус игрока, мб в enum
         if (attributes.containsKey("playerName")) {
             player.setUsername(String.valueOf(attributes.get("playerName")));
         } else {
-            throw new IllegalArgumentException("missing player name attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'playerName'");
         }
 
         player.setLobbyId(lobby.getId());
@@ -80,12 +79,12 @@ public class RequestHandler {
             Optional<LobbyEntity> lobby = lobbyService.findById(lobbyId);
 
             if(lobby.isEmpty()) {
-                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't exist", lobbyId));
+                throw new IllegalArgumentException(String.format("Лобби с id: '%d' не существует", lobbyId));
             }
 
             lobbyService.deleteById(Long.valueOf(attributes.get("lobbyId")));
         } else {
-            throw new IllegalArgumentException("missing lobby id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'lobbyId'");
         }
 
         HashMap<String, String> results = new HashMap<>();
@@ -97,7 +96,7 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
-    public HashMap<String, String> connectPlayer(HashMap<String, String> attributes) throws IllegalArgumentException {
+    public HashMap<String, String> connectPlayer(HashMap<String, String> attributes) throws IllegalArgumentException, LobbyOverflowException {
         PlayerEntity player = new PlayerEntity();
         Optional<LobbyEntity> lobby;
 
@@ -107,18 +106,25 @@ public class RequestHandler {
             lobby = lobbyService.findById(lobbyId);
 
             if(lobby.isEmpty()) {
-                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't exist", lobbyId));
+                throw new IllegalArgumentException(String.format("Лобби с id: '%d' не существует", lobbyId));
             }
+            Integer playersInLobby =playerService.countAllPlayersInLobby(lobbyId);
+            Integer maxPlayersInLobby = lobby.get().getMaxPlayers();
+
+            if(playersInLobby == maxPlayersInLobby) {
+                throw new LobbyOverflowException("Лобби переполнен");
+            }
+
             player.setLobbyId(lobbyId);
 
         } else {
-            throw new IllegalArgumentException("missing lobby id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'lobbyId'");
         }
 
         if(attributes.containsKey("playerName")) {
             player.setUsername(attributes.get("playerName"));
         } else {
-            throw new IllegalArgumentException("missing player name attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'playerName'");
         }
 
         playerService.save(player);
@@ -140,11 +146,11 @@ public class RequestHandler {
 
             player = playerService.findById(playerId);
             if (player.isEmpty()) {
-                throw new IllegalArgumentException(String.format("player with '%d' id doesn't exist", playerId));
+                throw new IllegalArgumentException(String.format("Игрок с id: '%d' не состоит в каком-либо лобби", playerId));
             }
 
         } else {
-            throw new IllegalArgumentException("missing player id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'playerId'");
         }
 
         Long lobbyId;
@@ -152,11 +158,11 @@ public class RequestHandler {
             lobbyId = Long.valueOf(attributes.get("lobbyId"));
 
             if (!player.get().getLobbyId().equals(lobbyId)) {
-                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
+                throw new IllegalArgumentException(String.format("Игрок с '%d' находится в другом лобби или такого лобби не существует", playerId));
             }
 
         } else {
-            throw new IllegalArgumentException("missing player id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'lobbyId'");
         }
 
         playerService.delete(player.get());
@@ -177,25 +183,23 @@ public class RequestHandler {
 
             player = playerService.findById(playerId);
             if (player.isEmpty()) {
-                throw new IllegalArgumentException(String.format("player with '%d' id doesn't exist", playerId));
+                throw new IllegalArgumentException(String.format("Игрок с id: '%d' не состоит в каком-либо лобби", playerId));
             }
 
         } else {
-            throw new IllegalArgumentException("missing player id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'playerId'");
         }
 
         Long lobbyId;
         if(attributes.containsKey("lobbyId")) {
             lobbyId = Long.valueOf(attributes.get("lobbyId"));
 
-            /*if (!player.get().getLobby().getId().equals(lobbyId)) {
-                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
+            if (!player.get().getLobbyId().equals(lobbyId)) {
+                throw new IllegalArgumentException(String.format("Игрок с '%d' находится в другом лобби или такого лобби не существует", playerId));
             }
 
-             */
-
         } else {
-            throw new IllegalArgumentException("missing player id attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'lobbyId'");
         }
 
         int status;
@@ -203,7 +207,7 @@ public class RequestHandler {
             status = Integer.parseInt(attributes.get("state"));
             player.get().setReady(status);
         } else {
-            throw new IllegalArgumentException("missing player name attribute");
+            throw new IllegalArgumentException("Отсутствует аттрибут 'state'");
         }
 
         playerService.save(player.get());

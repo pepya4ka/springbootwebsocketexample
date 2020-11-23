@@ -31,4 +31,10 @@ public class PlayerServiceImpl implements PlayerService {
     public void delete(PlayerEntity playerEntity) {
         repository.delete(playerEntity);
     }
+
+    @Override
+    @Transactional
+    public Integer countAllPlayersInLobby(Long lobbyId) {
+        return repository.countAllByLobbyId(lobbyId);
+    }
 }

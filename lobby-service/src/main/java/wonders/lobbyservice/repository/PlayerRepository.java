@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PlayerRepository extends CrudRepository<PlayerEntity, String> {
     Optional<PlayerEntity> findById (Long id);
+    Integer countAllByLobbyId(Long lobbyId);
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wonders.lobbyservice.exception.LobbyOverflowException;
 
 import java.util.HashMap;
 
@@ -71,7 +72,7 @@ public class RequestHandlerTests {
     }
 
     @Test
-    public void connectPlayer_PLayerConnected() {
+    public void connectPlayer_PLayerConnected() throws LobbyOverflowException {
         //get
         HashMap<String, String> connectPlayerAttributes = new HashMap<>();
         connectPlayerAttributes.put("playerName", "Player Name");
@@ -87,7 +88,7 @@ public class RequestHandlerTests {
     }
 
     @Test
-    public void disconnectPlayer_PLayerDisconnected() {
+    public void disconnectPlayer_PLayerDisconnected() throws LobbyOverflowException {
         //get
         HashMap<String, String> connectPlayerAttributes = new HashMap<>();
         connectPlayerAttributes.put("playerName", "Player Name");

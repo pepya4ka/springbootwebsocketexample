@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import wonders.lobbyservice.exception.LobbyOverflowException;
 import wonders.lobbyservice.model.ApiRequest;
 import wonders.lobbyservice.model.ApiResponse;
 import wonders.lobbyservice.service.RequestHandler;
@@ -70,6 +71,14 @@ public class LobbyController {
         try {
             results = requestHandler.connectPlayer(apiRequest.getData().getAttributes());
         } catch (IllegalArgumentException e) {
+
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("connect")
+                    .build();
+        } catch (LobbyOverflowException e) {
 
             return ApiResponse.builder()
                     .status("INVALID_DATA")

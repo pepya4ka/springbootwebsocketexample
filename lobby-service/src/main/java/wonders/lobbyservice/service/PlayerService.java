@@ -8,4 +8,5 @@ public interface PlayerService {
     PlayerEntity save(PlayerEntity entity);
     Optional<PlayerEntity> findById(Long id);
     void delete(PlayerEntity entity);
+    Integer countAllPlayersInLobby(Long lobbyId);
 }
