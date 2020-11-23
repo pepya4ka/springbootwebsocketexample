@@ -22,6 +22,7 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
+    @Transactional
     public HashMap<String, String> createLobby(HashMap<String, String> attributes) throws IllegalArgumentException {
         PlayerEntity player = new PlayerEntity();
 

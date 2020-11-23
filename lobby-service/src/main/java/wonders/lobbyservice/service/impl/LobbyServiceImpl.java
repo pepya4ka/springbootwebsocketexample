@@ -21,16 +21,19 @@ public class LobbyServiceImpl implements LobbyService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         lobbyRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public boolean existById(Long id) {
         return lobbyRepository.existsById(id);
     }
 
     @Override
+    @Transactional
     public Optional<LobbyEntity> findById(Long id) {
         return lobbyRepository.findById(id);
     }
