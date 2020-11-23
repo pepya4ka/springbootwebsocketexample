@@ -63,7 +63,7 @@ public class LobbyController {
                 .build();
     }
 
-    @MessageMapping("/delete")
+    @MessageMapping("/connectPlayer")
     @SendTo("/topic/lobby")
     public ApiResponse connectPlayer(ApiRequest apiRequest) {
         HashMap<String, String> results = new HashMap<>();
@@ -87,27 +87,57 @@ public class LobbyController {
                 .build();
     }
 
-    @MessageMapping("/start/")
+    @MessageMapping("/disconnectPlayer")
+    @SendTo("/topic/lobby")
+    public ApiResponse disconnectPLayer(ApiRequest apiRequest) {
+        HashMap<String, String> results = new HashMap<>();
+        try {
+            results = requestHandler.disconnectPlayer(apiRequest.getData().getAttributes());
+        } catch (IllegalArgumentException e) {
+
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("connect")
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status("SUCCESS")
+                .results(results)
+                .module("Lobby")
+                .type("connect")
+                .build();
+    }
+
+    @MessageMapping("/updatePLayer")
+    @SendTo("/topic/lobby")
+    public ApiResponse updatePLayer(ApiRequest apiRequest) {
+        HashMap<String, String> results = new HashMap<>();
+        try {
+            results = requestHandler.updatePlayerStatus(apiRequest.getData().getAttributes());
+        } catch (IllegalArgumentException e) {
+
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("connect")
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status("SUCCESS")
+                .results(results)
+                .module("Lobby")
+                .type("connect")
+                .build();
+    }
+
+    @MessageMapping("/start")
     @SendTo("/topic/lobby")
     public ApiResponse start(ApiRequest apiRequest) {
-        return null;
-    }
-
-    @MessageMapping("/connect/")
-    @SendTo("/topic/lobby/")
-    public ApiResponse connect(ApiRequest apiRequest) {
-        return null;
-    }
-
-    @MessageMapping("/disconnect/")
-    @SendTo("/topic/lobby/")
-    public ApiResponse disconnect(ApiRequest apiRequest) {
-        return null;
-    }
-
-    @MessageMapping("/update/")
-    @SendTo("/topic/lobby/")
-    public ApiResponse update(ApiRequest apiRequest) {
         return null;
     }
 
