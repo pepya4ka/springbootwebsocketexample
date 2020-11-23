@@ -15,9 +15,7 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,8 +24,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
 
     private String URL;
 
-    private CompletableFuture<ApiResponse> completableFuture;
-
+    BlockingQueue<ApiResponse> blockingQueue;
     private ApiRequest defaultCreateRequest;
 
     @BeforeEach
@@ -42,7 +39,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        completableFuture = new CompletableFuture<>();
+        blockingQueue = new LinkedBlockingDeque<>();
         URL = "ws://localhost:" + port + "/main";
     }
 
@@ -57,7 +54,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
         stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
         stompSession.send("/app/create", defaultCreateRequest);
 
-        ApiResponse apiResponse = completableFuture.get(10, SECONDS);
+        ApiResponse apiResponse = blockingQueue.poll(10, SECONDS);
 
         assertNotNull(apiResponse);
     }
@@ -73,7 +70,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
         stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
         stompSession.send("/app/create", defaultCreateRequest);
 
-        ApiResponse apiCreateResponse = completableFuture.get(10, SECONDS);
+        ApiResponse apiCreateResponse = blockingQueue.poll(10, SECONDS);
         assertNotNull(apiCreateResponse);
         assert (apiCreateResponse.getResults().containsKey("lobbyId"));
 
@@ -84,9 +81,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
         stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
         stompSession.send("/app/delete", deleteRequest);
 
-        completableFuture.complete(apiCreateResponse);
-        completableFuture = new CompletableFuture<>();
-        ApiResponse apiDeleteResponse = completableFuture.get(10, SECONDS);
+        ApiResponse apiDeleteResponse = blockingQueue.poll(10, SECONDS);
 
         assertNotNull(apiDeleteResponse);
     }
@@ -99,7 +94,7 @@ class LobbyControllerTest extends AbstractIntegrationTest {
 
         @Override
         public void handleFrame(StompHeaders stompHeaders, Object o) {
-            completableFuture.complete((ApiResponse) o);
+            blockingQueue.offer((ApiResponse) o);
         }
     }
 }
