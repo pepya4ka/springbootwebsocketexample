@@ -3,8 +3,9 @@ CREATE TABLE lobbies
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20),
     max_players INT,
-    move_time TIME,
-    owner_id INT
+    move_time_sec INT,
+    owner_id INT,
+    started bool
 );
 
 CREATE TABLE players
@@ -17,4 +18,4 @@ CREATE TABLE players
 );
 
 ALTER TABLE lobbies
-ADD FOREIGN KEY (owner_id) REFERENCES players (id);
+    ADD FOREIGN KEY (owner_id) REFERENCES players (id);

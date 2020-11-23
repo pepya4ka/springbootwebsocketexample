@@ -39,7 +39,7 @@ public class RequestHandler {
             throw new IllegalArgumentException("Отсутствует аттрибут 'maxPlayers'");
         }
         if (attributes.containsKey("moveTime")) {
-            lobby.setMoveTime(Time.valueOf(attributes.get("moveTime")));
+            lobby.setMoveTime(Integer.valueOf(attributes.get("moveTime")));
         } else {
             throw new IllegalArgumentException("Отсутствует аттрибут 'moveTime'");
         }

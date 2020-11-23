@@ -24,9 +24,12 @@ public class LobbyEntity {
     @Column(name = "max_players")
     private Integer maxPlayers;
     @Basic
-    @Column(name = "move_time")
-    private Time moveTime;
+    @Column(name = "move_time_sec")
+    private Integer moveTime;
     @Basic
     @Column(name = "owner_id")
     private Long ownerId;
+    @Basic
+    @Column(name = "started")
+    private int started;
 }
