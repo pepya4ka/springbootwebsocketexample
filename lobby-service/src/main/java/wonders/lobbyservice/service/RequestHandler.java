@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wonders.lobbyservice.model.LobbyEntity;
 import wonders.lobbyservice.model.PlayerEntity;
-import wonders.lobbyservice.model.exception.NotFoundException;
 
 import java.sql.Time;
 import java.util.Collections;
