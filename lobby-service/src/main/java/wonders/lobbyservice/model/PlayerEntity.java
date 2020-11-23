@@ -21,7 +21,7 @@ public class PlayerEntity {
     @Column(name="ready")
     private int ready;
 
-    @ManyToOne
-    @JoinColumn(name = "lobby_id", insertable = false, updatable = false)
-    private LobbyEntity lobby;
+    @Basic
+    @Column(name = "lobby_id")
+    private Long lobbyId;
 }

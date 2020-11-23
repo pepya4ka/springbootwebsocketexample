@@ -24,18 +24,8 @@ public class RequestHandler {
      */
     @Transactional
     public HashMap<String, String> createLobby(HashMap<String, String> attributes) throws IllegalArgumentException {
-        PlayerEntity player = new PlayerEntity();
-
-        //TODO добавить начальный статус игрока, мб в enum
-        if (attributes.containsKey("playerName")) {
-            player.setUsername(String.valueOf(attributes.get("playerName")));
-        } else {
-            throw new IllegalArgumentException("missing player name attribute");
-        }
 
         LobbyEntity lobby = new LobbyEntity();
-        lobby.setPlayers(Collections.singletonList(player));
-        lobby.setOwner(player);
 
         //TODO add exceptions
         if (attributes.containsKey("lobbyName")) {
@@ -55,6 +45,20 @@ public class RequestHandler {
         }
 
         lobby = lobbyService.save(lobby);
+
+        PlayerEntity player = new PlayerEntity();
+
+        //TODO добавить начальный статус игрока, мб в enum
+        if (attributes.containsKey("playerName")) {
+            player.setUsername(String.valueOf(attributes.get("playerName")));
+        } else {
+            throw new IllegalArgumentException("missing player name attribute");
+        }
+
+        player.setLobbyId(lobby.getId());
+        player = playerService.save(player);
+
+        lobby.setOwnerId(player.getId());
 
         HashMap<String, String> results = new HashMap<>();
         results.put("ownerName", player.getUsername());
@@ -146,7 +150,7 @@ public class RequestHandler {
         if(attributes.containsKey("lobbyId")) {
             lobbyId = Long.valueOf(attributes.get("lobbyId"));
 
-            if (!player.get().getLobby().getId().equals(lobbyId)) {
+            if (!player.get().getLobbyId().equals(lobbyId)) {
                 throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
             }
 
@@ -183,9 +187,11 @@ public class RequestHandler {
         if(attributes.containsKey("lobbyId")) {
             lobbyId = Long.valueOf(attributes.get("lobbyId"));
 
-            if (!player.get().getLobby().getId().equals(lobbyId)) {
+            /*if (!player.get().getLobby().getId().equals(lobbyId)) {
                 throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
             }
+
+             */
 
         } else {
             throw new IllegalArgumentException("missing player id attribute");

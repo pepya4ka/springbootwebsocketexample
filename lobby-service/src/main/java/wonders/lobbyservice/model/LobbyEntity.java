@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Table(name = "lobbies", schema = "heroku_7edbe89173452c0")
@@ -28,26 +26,7 @@ public class LobbyEntity {
     @Basic
     @Column(name = "move_time")
     private Time moveTime;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinColumn(name = "lobby_id")
-    private List<PlayerEntity> players;
-
-    @OneToOne(fetch = FetchType.EAGER, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinColumn(name = "owner_id")
-    private PlayerEntity owner;
-
-    public void addPlayer(PlayerEntity player) {
-        if(players == null) {
-            players = new LinkedList<>();
-        }
-
-        players.add(player);
-    }
+    @Basic
+    @Column(name = "owner_id")
+    private Long ownerId;
 }
