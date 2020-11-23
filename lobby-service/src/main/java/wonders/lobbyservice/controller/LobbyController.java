@@ -29,6 +29,7 @@ public class LobbyController {
                     .results(results)
                     .module("Lobby")
                     .type("create")
+                    .error(e.getMessage())
                     .build();
         }
 
@@ -53,6 +54,7 @@ public class LobbyController {
                     .results(results)
                     .module("Lobby")
                     .type("delete")
+                    .error(e.getMessage())
                     .build();
         }
 
@@ -70,21 +72,14 @@ public class LobbyController {
         HashMap<String, String> results = new HashMap<>();
         try {
             results = requestHandler.connectPlayer(apiRequest.getData().getAttributes());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | LobbyOverflowException e) {
 
             return ApiResponse.builder()
                     .status("INVALID_DATA")
                     .results(results)
                     .module("Lobby")
                     .type("connect")
-                    .build();
-        } catch (LobbyOverflowException e) {
-
-            return ApiResponse.builder()
-                    .status("INVALID_DATA")
-                    .results(results)
-                    .module("Lobby")
-                    .type("connect")
+                    .error(e.getMessage())
                     .build();
         }
 
@@ -109,6 +104,7 @@ public class LobbyController {
                     .results(results)
                     .module("Lobby")
                     .type("connect")
+                    .error(e.getMessage())
                     .build();
         }
 
@@ -133,6 +129,7 @@ public class LobbyController {
                     .results(results)
                     .module("Lobby")
                     .type("connect")
+                    .error(e.getMessage())
                     .build();
         }
 
