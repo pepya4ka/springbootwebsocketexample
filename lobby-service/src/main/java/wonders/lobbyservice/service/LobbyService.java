@@ -2,7 +2,6 @@ package wonders.lobbyservice.service;
 
 import org.springframework.stereotype.Service;
 import wonders.lobbyservice.model.LobbyEntity;
-import wonders.lobbyservice.model.exception.NotFoundException;
 
 import java.util.Optional;
 
