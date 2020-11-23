@@ -73,7 +73,7 @@ public class RequestHandler {
     public HashMap<String, String> deleteLobby (HashMap<String, String> attributes) throws IllegalArgumentException {
         if(attributes.containsKey("lobbyId")){
             Long lobbyId = (Long.valueOf(attributes.get("lobbyId")));
-            Optional<LobbyEntity> lobby = lobby = lobbyService.findById(lobbyId);
+            Optional<LobbyEntity> lobby = lobbyService.findById(lobbyId);
 
             if(lobby.isEmpty()) {
                 throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't exist", lobbyId));
