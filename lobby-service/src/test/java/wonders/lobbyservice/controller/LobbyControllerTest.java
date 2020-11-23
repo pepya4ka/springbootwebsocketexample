@@ -28,14 +28,14 @@ class LobbyControllerTest extends AbstractIntegrationTest {
     private ApiRequest defaultCreateRequest;
 
     @BeforeEach
-    public void fillDefaultApiRequest(){
+    public void fillDefaultApiRequest() {
         HashMap<String, String> results = new HashMap<>();
         results.put("playerName", "playerName");
         results.put("lobbyName", "lobbyName");
         results.put("maxPlayers", "6");
         results.put("moveTime", "00:00:12");
         defaultCreateRequest = new ApiRequest(new ApiRequest.Data("create",results));
-    };
+    }
 
     @BeforeEach
     public void setup() {
