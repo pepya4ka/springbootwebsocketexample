@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wonders.lobbyservice.model.LobbyEntity;
-import wonders.lobbyservice.model.LobbyOwnerEntity;
-import wonders.lobbyservice.model.LobbyOwnerEntityPK;
 import wonders.lobbyservice.model.PlayerEntity;
 
 import java.sql.Time;
@@ -19,8 +17,6 @@ public class RequestHandler {
     private PlayerService playerService;
     @Autowired
     private LobbyService lobbyService;
-    @Autowired
-    private LobbyOwnerService lobbyOwnerService;
 
     /*
      * @return attributes to response
@@ -35,6 +31,7 @@ public class RequestHandler {
 
         LobbyEntity lobby = new LobbyEntity();
         lobby.setPlayers(Collections.singletonList(player));
+        lobby.setOwner(player);
 
         //TODO add exceptions
         if (attributes.containsKey("lobbyName")) {
@@ -54,10 +51,6 @@ public class RequestHandler {
         }
 
         lobby = lobbyService.save(lobby);
-
-        LobbyOwnerEntity owner = new LobbyOwnerEntity();
-        owner.setPk(new LobbyOwnerEntityPK(lobby.getId(), player.getId()));
-        lobbyOwnerService.save(owner);
 
         HashMap<String, String> results = new HashMap<>();
         results.put("ownerName", player.getUsername());
