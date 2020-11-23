@@ -9,7 +9,7 @@ import wonders.lobbyservice.model.ApiResponse;
 import wonders.lobbyservice.service.RequestHandler;
 
 @Controller
-public class MainController {
+public class LobbyController {
     @Autowired
     RequestHandler requestHandler;
 
@@ -31,7 +31,7 @@ public class MainController {
     }
 
     @MessageMapping("/start/")
-    @SendTo("/topic/lobby/")
+    @SendTo("/topic/lobby")
     public ApiResponse start(ApiRequest apiRequest) {
         return null;
     }
@@ -54,8 +54,8 @@ public class MainController {
         return null;
     }
 
-    @MessageMapping("/delete/")
-    @SendTo("/topic/lobby/")
+    @MessageMapping("/delete")
+    @SendTo("/topic/lobby")
     public ApiResponse delete(ApiRequest apiRequest) {
         return null;
     }

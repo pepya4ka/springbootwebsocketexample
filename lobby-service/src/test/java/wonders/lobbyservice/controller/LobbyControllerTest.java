@@ -1,6 +1,5 @@
 package wonders.lobbyservice.controller;
 
-import org.springframework.transaction.annotation.Transactional;
 import wonders.lobbyservice.AbstractIntegrationTest;
 import wonders.lobbyservice.model.ApiRequest;
 import wonders.lobbyservice.model.ApiResponse;
@@ -23,11 +22,23 @@ import java.util.concurrent.TimeoutException;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class MainControllerTest extends AbstractIntegrationTest {
+class LobbyControllerTest extends AbstractIntegrationTest {
 
     private String URL;
 
     private CompletableFuture<ApiResponse> completableFuture;
+
+    private ApiRequest defaultCreateRequest;
+
+    @BeforeEach
+    public void fillDefaultApiRequest(){
+        HashMap<String, String> results = new HashMap<>();
+        results.put("playerName", "playerName");
+        results.put("lobbyName", "lobbyName");
+        results.put("maxPlayers", "6");
+        results.put("moveTime", "00:00:12");
+        defaultCreateRequest = new ApiRequest(new ApiRequest.Data("create",results));
+    };
 
     @BeforeEach
     public void setup() {
@@ -36,26 +47,48 @@ class MainControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testCreateGameEndpoint() throws InterruptedException, ExecutionException, TimeoutException {
+    public void createLobby_LobbyCreated() throws InterruptedException, ExecutionException, TimeoutException {
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(createTransportClient()));
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
         StompSession stompSession = stompClient.connect(URL, new StompSessionHandlerAdapter() {
         }).get(1, SECONDS);
 
-        HashMap<String, String> results = new HashMap<>();
-        results.put("playerName", "playerName");
-        results.put("lobbyName", "lobbyName");
-        results.put("maxPlayers", "6");
-        results.put("moveTime", "00:00:12");
-        ApiRequest apiRequest = new ApiRequest(new ApiRequest.Data("create",results));
-
         stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
-        stompSession.send("/app/create", apiRequest);
+        stompSession.send("/app/create", defaultCreateRequest);
 
         ApiResponse apiResponse = completableFuture.get(10, SECONDS);
 
         assertNotNull(apiResponse);
+    }
+
+    @Test
+    public void deleteLobby_LobbyDeleted () throws InterruptedException, ExecutionException, TimeoutException {
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(createTransportClient()));
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        StompSession stompSession = stompClient.connect(URL, new StompSessionHandlerAdapter() {
+        }).get(1, SECONDS);
+
+        stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
+        stompSession.send("/app/create", defaultCreateRequest);
+
+        ApiResponse apiCreateResponse = completableFuture.get(10, SECONDS);
+        assertNotNull(apiCreateResponse);
+        assert (apiCreateResponse.getResults().containsKey("lobbyId"));
+
+        HashMap<String, String> attributes = new HashMap<>();
+        attributes.put("lobbyId", apiCreateResponse.getResults().get("lobbyId"));
+        ApiRequest deleteRequest = new ApiRequest(new ApiRequest.Data("delete", attributes));
+
+        stompSession.subscribe("/topic/lobby", new CreateLobbyStompFrameHandler());
+        stompSession.send("/app/delete", deleteRequest);
+
+        completableFuture.complete(apiCreateResponse);
+        completableFuture = new CompletableFuture<>();
+        ApiResponse apiDeleteResponse = completableFuture.get(10, SECONDS);
+
+        assertNotNull(apiDeleteResponse);
     }
 
     private class CreateLobbyStompFrameHandler implements StompFrameHandler {

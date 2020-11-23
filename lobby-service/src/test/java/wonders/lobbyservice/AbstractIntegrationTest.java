@@ -2,6 +2,7 @@ package wonders.lobbyservice;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 public class AbstractIntegrationTest {
 
     @LocalServerPort
