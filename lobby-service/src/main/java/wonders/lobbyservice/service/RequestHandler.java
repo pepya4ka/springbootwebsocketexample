@@ -109,6 +109,7 @@ public class RequestHandler {
             if(lobby.isEmpty()) {
                 throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't exist", lobbyId));
             }
+            player.setLobbyId(lobbyId);
 
         } else {
             throw new IllegalArgumentException("missing lobby id attribute");
