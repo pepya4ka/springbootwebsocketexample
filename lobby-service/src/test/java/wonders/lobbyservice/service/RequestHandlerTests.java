@@ -16,6 +16,8 @@ public class RequestHandlerTests {
     private RequestHandler requestHandler;
 
     private HashMap<String, String> defaultCreateLobbyAttributes = new HashMap<>();
+    private HashMap<String, String> defaultDeleteLobbyAttributes = new HashMap<>();
+    private HashMap<String, String> defaultUpdatePlayerStatusAttributes = new HashMap<>();
 
     @BeforeEach
     public void fillDefaultApiRequest() {
@@ -25,13 +27,44 @@ public class RequestHandlerTests {
         defaultCreateLobbyAttributes.put("moveTime", "00:00:12");
     }
 
-    @Test
+   @Test
     public void createLobby_LobbyCreated() {
         //get
         HashMap<String, String> attributes = defaultCreateLobbyAttributes;
 
         //run
         HashMap<String, String> result = requestHandler.createLobby(defaultCreateLobbyAttributes);
+
+        //assert
+        assert (!result.isEmpty());
+    }
+
+    @Test
+    public void deleteLobby_LobbyDeleted() {
+        //get
+        HashMap<String, String> attributes = defaultCreateLobbyAttributes;
+
+        //run
+        HashMap<String, String> resultCreate = requestHandler.createLobby(defaultCreateLobbyAttributes);
+        defaultDeleteLobbyAttributes.put("lobbyId", resultCreate.get("lobbyId"));
+        defaultUpdatePlayerStatusAttributes.put("playerId", resultCreate.get("ownerId"));
+        defaultUpdatePlayerStatusAttributes.put("state", "1");
+        HashMap<String, String> result = requestHandler.deleteLobby(defaultDeleteLobbyAttributes);
+
+
+        //assert
+        assert (!result.isEmpty());
+    }
+
+    @Test
+    public void updatePlayerStatus() {
+        //get
+        HashMap<String, String> attributes = defaultCreateLobbyAttributes;
+
+        //run
+        HashMap<String, String> resultCreate = requestHandler.createLobby(defaultCreateLobbyAttributes);
+        defaultUpdatePlayerStatusAttributes.put("lobbyId", resultCreate.get("lobbyId"));
+        HashMap<String, String> result = requestHandler.updatePlayerStatus(defaultCreateLobbyAttributes);
 
         //assert
         assert (!result.isEmpty());

@@ -86,6 +86,11 @@ class LobbyControllerTest extends AbstractIntegrationTest {
         assertNotNull(apiDeleteResponse);
     }
 
+    @Test
+    public void connectLobby_LobbyConnected () throws InterruptedException, ExecutionException, TimeoutException {
+
+    }
+
     private class CreateLobbyStompFrameHandler implements StompFrameHandler {
         @Override
         public Type getPayloadType(StompHeaders stompHeaders) {
