@@ -8,6 +8,8 @@ import wonders.lobbyservice.model.ApiRequest;
 import wonders.lobbyservice.model.ApiResponse;
 import wonders.lobbyservice.service.RequestHandler;
 
+import java.util.HashMap;
+
 @Controller
 public class LobbyController {
     @Autowired
@@ -16,18 +18,73 @@ public class LobbyController {
     @MessageMapping("/create")
     @SendTo("/topic/lobby")
     public ApiResponse create(ApiRequest apiRequest) {
-        ApiResponse response = new ApiResponse();
-        response.setStatus("SUCCESS");
-        //TODO API ERROR RESPONSE
+        HashMap<String, String> results = new HashMap<>();
         try {
-            response.setResults(requestHandler.createLobby(apiRequest.getData().getAttributes()));
-        } catch (Exception e) {
-            return null;
-        }
-        response.setModule("Lobby");
-        response.setType("Create");
+            results = requestHandler.createLobby(apiRequest.getData().getAttributes());
+        } catch (IllegalArgumentException e) {
 
-        return response;
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("create")
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status("SUCCESS")
+                .results(results)
+                .module("Lobby")
+                .type("create")
+                .build();
+    }
+
+    @MessageMapping("/delete")
+    @SendTo("/topic/lobby")
+    public ApiResponse delete(ApiRequest apiRequest) {
+        HashMap<String, String> results = new HashMap<>();
+        try {
+            results = requestHandler.deleteLobby(apiRequest.getData().getAttributes());
+        } catch (IllegalArgumentException e) {
+
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("delete")
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status("SUCCESS")
+                .results(results)
+                .module("Lobby")
+                .type("delete")
+                .build();
+    }
+
+    @MessageMapping("/delete")
+    @SendTo("/topic/lobby")
+    public ApiResponse connectPlayer(ApiRequest apiRequest) {
+        HashMap<String, String> results = new HashMap<>();
+        try {
+            results = requestHandler.connectPlayer(apiRequest.getData().getAttributes());
+        } catch (IllegalArgumentException e) {
+
+            return ApiResponse.builder()
+                    .status("INVALID_DATA")
+                    .results(results)
+                    .module("Lobby")
+                    .type("connect")
+                    .build();
+        }
+
+        return ApiResponse.builder()
+                .status("SUCCESS")
+                .results(results)
+                .module("Lobby")
+                .type("connect")
+                .build();
     }
 
     @MessageMapping("/start/")
@@ -51,12 +108,6 @@ public class LobbyController {
     @MessageMapping("/update/")
     @SendTo("/topic/lobby/")
     public ApiResponse update(ApiRequest apiRequest) {
-        return null;
-    }
-
-    @MessageMapping("/delete")
-    @SendTo("/topic/lobby")
-    public ApiResponse delete(ApiRequest apiRequest) {
         return null;
     }
 

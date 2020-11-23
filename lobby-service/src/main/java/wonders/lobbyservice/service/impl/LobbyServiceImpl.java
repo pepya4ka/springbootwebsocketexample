@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wonders.lobbyservice.model.LobbyEntity;
+import wonders.lobbyservice.model.exception.NotFoundException;
 import wonders.lobbyservice.repository.LobbyRepository;
 import wonders.lobbyservice.service.LobbyService;
+
+import java.util.Optional;
 
 @Service
 public class LobbyServiceImpl implements LobbyService {
@@ -29,7 +32,7 @@ public class LobbyServiceImpl implements LobbyService {
     }
 
     @Override
-    public LobbyEntity findById(Long id) throws Exception {
-        return lobbyRepository.findById(id).orElseThrow(Exception::new);
+    public Optional<LobbyEntity> findById(Long id) {
+        return lobbyRepository.findById(id);
     }
 }
