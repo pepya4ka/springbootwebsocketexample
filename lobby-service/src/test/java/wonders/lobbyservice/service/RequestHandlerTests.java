@@ -68,7 +68,7 @@ public class RequestHandlerTests {
         HashMap<String, String> connectResult = requestHandler.connectPlayer(connectPlayerAttributes);
 
         disconnectPlayerAttributes.put("lobbyId", connectResult.get("lobbyId"));
-        disconnectPlayerAttributes.put("playerName", connectResult.get("playerName"));
+        disconnectPlayerAttributes.put("playerId", connectResult.get("playerId"));
         HashMap<String, String> disconnectResult = requestHandler.disconnectPlayer(disconnectPlayerAttributes);
 
         //assert
