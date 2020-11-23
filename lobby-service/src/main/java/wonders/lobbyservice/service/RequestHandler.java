@@ -116,12 +116,10 @@ public class RequestHandler {
             throw new IllegalArgumentException("missing player name attribute");
         }
 
-        LobbyEntity lobbyToUpdate = lobby.get();
-        lobbyToUpdate.addPlayer(player);
-        lobbyService.save(lobbyToUpdate);
+        playerService.save(player);
 
         HashMap<String, String> result = new HashMap<>();
-        result.put("lobbyId", lobbyToUpdate.getId().toString());
+        result.put("lobbyId", lobby.get().getId().toString());
         result.put("playerId", String.valueOf(player.getId()));
         result.put("playerName", player.getUsername());
 

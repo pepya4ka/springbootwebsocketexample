@@ -40,12 +40,38 @@ public class RequestHandlerTests {
     @Test
     public void connectPlayer_PLayerConnected() {
         //get
-        HashMap<String, String> attributes = defaultCreateLobbyAttributes;
+        HashMap<String, String> connectPlayerAttributes = new HashMap<>();
+        connectPlayerAttributes.put("playerName", "Player Name");
 
         //run
-        HashMap<String, String> result = requestHandler.createLobby(defaultCreateLobbyAttributes);
+        HashMap<String, String> createResult = requestHandler.createLobby(defaultCreateLobbyAttributes);
+        connectPlayerAttributes.put("lobbyId", createResult.get("lobbyId"));
+
+        HashMap<String, String> connectResult = requestHandler.connectPlayer(connectPlayerAttributes);
 
         //assert
-        assert (!result.isEmpty());
+        assert (!connectResult.isEmpty());
+    }
+
+    @Test
+    public void disconnectPlayer_PLayerDisconnected() {
+        //get
+        HashMap<String, String> connectPlayerAttributes = new HashMap<>();
+        connectPlayerAttributes.put("playerName", "Player Name");
+
+        HashMap<String, String> disconnectPlayerAttributes = new HashMap<>();
+
+        //run
+        HashMap<String, String> createResult = requestHandler.createLobby(defaultCreateLobbyAttributes);
+        connectPlayerAttributes.put("lobbyId", createResult.get("lobbyId"));
+
+        HashMap<String, String> connectResult = requestHandler.connectPlayer(connectPlayerAttributes);
+
+        disconnectPlayerAttributes.put("lobbyId", connectResult.get("lobbyId"));
+        disconnectPlayerAttributes.put("playerName", connectResult.get("playerName"));
+        HashMap<String, String> disconnectResult = requestHandler.disconnectPlayer(disconnectPlayerAttributes);
+
+        //assert
+        assert (!disconnectResult.isEmpty());
     }
 }
