@@ -4,7 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import wonders.lobbyservice.model.PlayerEntity;
 
+import java.util.Optional;
+
 @Repository
-public interface LobbyPlayersRepository extends CrudRepository<PlayerEntity, String> {
-    PlayerEntity findByUsername (String username);
+public interface PlayerRepository extends CrudRepository<PlayerEntity, String> {
+    Optional<PlayerEntity> findById (Long id);
 }

@@ -69,7 +69,6 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
-    @Transactional
     public HashMap<String, String> deleteLobby (HashMap<String, String> attributes) throws IllegalArgumentException {
         if(attributes.containsKey("lobbyId")){
             Long lobbyId = (Long.valueOf(attributes.get("lobbyId")));
@@ -93,9 +92,8 @@ public class RequestHandler {
     /*
      * @return attributes to response
      */
-    @Transactional
     public HashMap<String, String> connectPlayer(HashMap<String, String> attributes) throws IllegalArgumentException {
-        PlayerEntity lobbyPlayer = new PlayerEntity();
+        PlayerEntity player = new PlayerEntity();
         Optional<LobbyEntity> lobby;
 
         if(attributes.containsKey("lobbyId")) {
@@ -112,20 +110,107 @@ public class RequestHandler {
         }
 
         if(attributes.containsKey("playerName")) {
-            lobbyPlayer.setUsername(attributes.get("playerName"));
+            player.setUsername(attributes.get("playerName"));
         } else {
             throw new IllegalArgumentException("missing player name attribute");
         }
 
         LobbyEntity lobbyToUpdate = lobby.get();
-        lobbyToUpdate.addPlayer(lobbyPlayer);
+        lobbyToUpdate.addPlayer(player);
         lobbyService.save(lobbyToUpdate);
 
         HashMap<String, String> result = new HashMap<>();
         result.put("lobbyId", lobbyToUpdate.getId().toString());
-        result.put("playerId", String.valueOf(lobbyPlayer.getId()));
-        result.put("playerName", lobbyPlayer.getUsername());
+        result.put("playerId", String.valueOf(player.getId()));
+        result.put("playerName", player.getUsername());
 
         return result;
+    }
+
+    public HashMap<String, String> disconnectPlayer(HashMap<String, String> attributes) throws IllegalArgumentException {
+        Optional<PlayerEntity> player;
+
+        Long playerId;
+        if(attributes.containsKey("playerId")) {
+            playerId = Long.valueOf(attributes.get("playerId"));
+
+            player = playerService.findById(playerId);
+            if (player.isEmpty()) {
+                throw new IllegalArgumentException(String.format("player with '%d' id doesn't exist", playerId));
+            }
+
+        } else {
+            throw new IllegalArgumentException("missing player id attribute");
+        }
+
+        Long lobbyId;
+        if(attributes.containsKey("lobbyId")) {
+            lobbyId = Long.valueOf(attributes.get("lobbyId"));
+
+            if (!player.get().getLobby().getId().equals(lobbyId)) {
+                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
+            }
+
+        } else {
+            throw new IllegalArgumentException("missing player id attribute");
+        }
+
+        playerService.delete(player.get());
+
+        HashMap<String, String> result = new HashMap<>();
+        result.put("lobbyId", lobbyId.toString());
+        result.put("playerId", playerId.toString());
+
+        return result;
+    }
+
+    public HashMap<String, String> updatePlayerStatus(HashMap<String, String> attributes) throws IllegalArgumentException {
+        Optional<PlayerEntity> player;
+
+        Long playerId;
+        if(attributes.containsKey("playerId")) {
+            playerId = Long.valueOf(attributes.get("playerId"));
+
+            player = playerService.findById(playerId);
+            if (player.isEmpty()) {
+                throw new IllegalArgumentException(String.format("player with '%d' id doesn't exist", playerId));
+            }
+
+        } else {
+            throw new IllegalArgumentException("missing player id attribute");
+        }
+
+        Long lobbyId;
+        if(attributes.containsKey("lobbyId")) {
+            lobbyId = Long.valueOf(attributes.get("lobbyId"));
+
+            if (!player.get().getLobby().getId().equals(lobbyId)) {
+                throw new IllegalArgumentException(String.format("lobby with '%d' id doesn't contain player", lobbyId));
+            }
+
+        } else {
+            throw new IllegalArgumentException("missing player id attribute");
+        }
+
+        int status;
+        if(attributes.containsKey("state")) {
+            status = Integer.parseInt(attributes.get("playerName"));
+            player.get().setReady(status);
+        } else {
+            throw new IllegalArgumentException("missing player name attribute");
+        }
+
+        playerService.save(player.get());
+
+        HashMap<String, String> result = new HashMap<>();
+        result.put("lobbyId", lobbyId.toString());
+        result.put("playerId", playerId.toString());
+        result.put("state", Integer.toString(status));
+
+        return result;
+    }
+
+    public HashMap<String, String> startGame(HashMap<String, String> attributes) throws IllegalArgumentException {
+        return null;
     }
 }

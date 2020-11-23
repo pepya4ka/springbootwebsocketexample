@@ -19,7 +19,7 @@ public class PlayerEntity {
 
     @Basic
     @Column(name="ready")
-    private Integer ready;
+    private int ready;
 
     @ManyToOne
     @JoinColumn(name = "lobby_id", insertable = false, updatable = false)
